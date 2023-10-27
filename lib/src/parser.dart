@@ -18,9 +18,10 @@ class Parser {
 
   /// Parses the given input string into an [Expression]. Throws a
   /// [ArgumentError] if the given [inputString] is empty. Throws a
-  /// [StateError] if the token stream is invalid. Returns a valid
-  /// [Expression].
-  Expression parse(String inputString) {
+  /// [StateError] if the token stream is invalid. Set the [toDecimal] parameter
+  /// to `true` (default is `false`) if you want to use [DecimalNumber] instead
+  /// of [Number]. Returns a valid [Expression].
+  Expression parse(String inputString, {bool toDecimal = false}) {
     if (inputString.trim().isEmpty) {
       throw FormatException('The given input string was empty.');
     }
@@ -33,7 +34,9 @@ class Parser {
 
       switch (currToken.type) {
         case TokenType.VAL:
-          currExpr = Number(double.parse(currToken.text));
+          currExpr = toDecimal
+              ? DecimalNumber(Decimal.parse(currToken.text))
+              : Number(double.parse(currToken.text));
           break;
         case TokenType.VAR:
           currExpr = Variable(currToken.text);

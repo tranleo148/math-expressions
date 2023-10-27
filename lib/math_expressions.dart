@@ -32,6 +32,7 @@ library math_expressions;
 
 import 'dart:math' as math;
 
+import 'package:decimal/decimal.dart';
 import 'package:vector_math/vector_math.dart' show Vector2, Vector3, Vector4;
 
 part 'src/algebra.dart';

@@ -759,6 +759,37 @@ class Number extends Literal {
   Expression derive(String toVar) => Number(0.0);
 }
 
+/// A decimal number is a constant number literal.
+class DecimalNumber extends Literal {
+  /// Creates a number literal with given value.
+  /// Always holds a Decimal internally.
+  DecimalNumber(Decimal value) : super(value);
+
+  @override
+  bool isConstant() => true;
+
+  @override
+  Decimal getConstantValue() => value;
+
+  @override
+  dynamic evaluate(EvaluationType type, ContextModel context) {
+    if (type == EvaluationType.REAL) {
+      return value;
+    }
+
+    if (type == EvaluationType.VECTOR) {
+      // interpret number as scalar
+      return value;
+    }
+
+    throw UnsupportedError(
+        'DecimalNumber $this can not be interpreted as: $type');
+  }
+
+  @override
+  Expression derive(String toVar) => DecimalNumber(Decimal.parse('0.0'));
+}
+
 /// A vector of arbitrary size.
 class Vector extends Literal {
   /// Creates a vector with the given element expressions.

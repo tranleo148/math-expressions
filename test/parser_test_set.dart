@@ -14,6 +14,7 @@ class ParserTests extends TestSet {
         'Parser Expression Creation from toString()':
             parserExpressionTest_ParseFromToString,
         'Parser Operator Precedence': parserOperatorPrecedence,
+        'Parser Decimal Number': parserDecimalNumber,
       };
 
   @override
@@ -548,5 +549,47 @@ class ParserTests extends TestSet {
 
     e = pars.parse('-3*2');
     expect(e.toString(), equals('((-3.0) * 2.0)'));
+  }
+
+  void parserDecimalNumber() {
+    ContextModel context = ContextModel();
+
+    Expression e = Parser().parse('88888888888888888', toDecimal: true);
+    expect(e.toString(), equals('88888888888888888'));
+
+    e = pars.parse('123456789000000 + 0.12345', toDecimal: true);
+    dynamic val = e.evaluate(EvaluationType.REAL, context);
+    expect(val.toString(), equals('123456789000000.12345'));
+
+    e = pars.parse('123456789000000.00025 + 0.12345', toDecimal: true);
+    val = e.evaluate(EvaluationType.REAL, context);
+    expect(val.toString(), equals('123456789000000.1237'));
+
+    e = pars.parse('2.1 * 3', toDecimal: true);
+    val = e.evaluate(EvaluationType.REAL, context);
+    expect(val.toString(), equals('6.3'));
+
+    e = pars.parse('2.3 * 3', toDecimal: true);
+    val = e.evaluate(EvaluationType.REAL, context);
+    expect(val.toString(), equals('6.9'));
+
+    e = pars.parse('52.2 % 2', toDecimal: true);
+    val = e.evaluate(EvaluationType.REAL, context);
+    expect(val.toString(), equals('0.2'));
+
+    e = pars.parse('52.2 / 2', toDecimal: true);
+    val = e.evaluate(EvaluationType.REAL, context);
+    if (val is Rational) val = val.toDecimal();
+    expect(val.toString(), equals('26.1'));
+
+    e = pars.parse('1 / 3', toDecimal: true);
+    val = e.evaluate(EvaluationType.REAL, context);
+    if (val is Rational) val = val.toDecimal(scaleOnInfinitePrecision: 10);
+    expect(val.toString(), equals('0.3333333333'));
+
+    e = pars.parse('667555532 / 888888888', toDecimal: true);
+    val = e.evaluate(EvaluationType.REAL, context);
+    if (val is Rational) val = val.toDecimal(scaleOnInfinitePrecision: 10);
+    expect(val.toString(), equals('0.7509999742'));
   }
 }
