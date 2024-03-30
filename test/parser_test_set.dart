@@ -591,5 +591,10 @@ class ParserTests extends TestSet {
     val = e.evaluate(EvaluationType.REAL, context);
     if (val is Rational) val = val.toDecimal(scaleOnInfinitePrecision: 10);
     expect(val.toString(), equals('0.7509999742'));
+
+    e = pars.parse('(10 + 387 / 99 * 136 - 9933) / 15 % 98', toDecimal: true);
+    val = e.evaluate(EvaluationType.REAL, context);
+    if (val is Rational) val = val.toDecimal(scaleOnInfinitePrecision: 10);
+    expect(val.toString(), equals('59.909090909'));
   }
 }

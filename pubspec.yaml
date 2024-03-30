@@ -6,6 +6,7 @@ description: A library for parsing and evaluating mathematical expressions, supp
 dependencies:
   decimal: ^2.3.3
   vector_math: ^2.1.0
+  rational: ^2.2.2
 
 dev_dependencies:
   lints: ^3.0.0

@@ -269,8 +269,17 @@ class Plus extends BinaryOperator {
   }
 
   @override
-  dynamic evaluate(EvaluationType type, ContextModel context) =>
-      first.evaluate(type, context) + second.evaluate(type, context);
+  dynamic evaluate(EvaluationType type, ContextModel context) {
+    final dynamic firstEval = first.evaluate(type, context);
+    final dynamic secondEval = second.evaluate(type, context);
+
+    if (firstEval is Rational && secondEval is Decimal) {
+      return firstEval + secondEval.toRational();
+    } else if (firstEval is Decimal && secondEval is Rational) {
+      return firstEval.toRational() + secondEval;
+    }
+    return firstEval + secondEval;
+  }
 
   @override
   String toString() => '($first + $second)';
@@ -321,8 +330,17 @@ class Minus extends BinaryOperator {
   }
 
   @override
-  dynamic evaluate(EvaluationType type, ContextModel context) =>
-      first.evaluate(type, context) - second.evaluate(type, context);
+  dynamic evaluate(EvaluationType type, ContextModel context) {
+    final dynamic firstEval = first.evaluate(type, context);
+    final dynamic secondEval = second.evaluate(type, context);
+
+    if (firstEval is Rational && secondEval is Decimal) {
+      return firstEval - secondEval.toRational();
+    } else if (firstEval is Decimal && secondEval is Rational) {
+      return firstEval.toRational() - secondEval;
+    }
+    return firstEval - secondEval;
+  }
 
   @override
   String toString() => '($first - $second)';
@@ -412,6 +430,12 @@ class Times extends BinaryOperator {
       }
     }
 
+    if (firstEval is Rational && secondEval is Decimal) {
+      return firstEval * secondEval.toRational();
+    } else if (firstEval is Decimal && secondEval is Rational) {
+      return firstEval.toRational() * secondEval;
+    }
+
     return firstEval * secondEval;
   }
 
@@ -493,6 +517,12 @@ class Divide extends BinaryOperator {
       }
     }
 
+    if (firstEval is Rational && secondEval is Decimal) {
+      return firstEval / secondEval.toRational();
+    } else if (firstEval is Decimal && secondEval is Rational) {
+      return firstEval.toRational() / secondEval;
+    }
+
     return firstEval / secondEval;
   }
 
@@ -546,6 +576,11 @@ class Modulo extends BinaryOperator {
     final dynamic secondEval = second.evaluate(type, context);
 
     if (type == EvaluationType.REAL) {
+      if (firstEval is Rational && secondEval is Decimal) {
+        return firstEval % secondEval.toRational();
+      } else if (firstEval is Decimal && secondEval is Rational) {
+        return firstEval.toRational() % secondEval;
+      }
       return firstEval % secondEval;
     }
 
